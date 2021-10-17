@@ -26,23 +26,13 @@ obstacle_t lower_obstacle_init(void)
    if outside bounds */
 void advance_obstacle(obstacle_t obstacle)
 {
-    obstacle.top.y = (obstacle.top.y + 1) % TINYGL_HEIGHT;
-    obstacle.bottom.y = (obstacle.bottom.y + 1) % TINYGL_HEIGHT;
+    obstacle.top.y += 1;
+    obstacle.bottom.y += 1;
 }
 
-#include "pacer.h"
-#include "tinygl.h"
-
-void main(void)
+/* Reset an obstacle's position to the initial points */
+void reset_obstacle(obstacle_t obstacle)
 {
-    pacer_init(1000);
-    tinygl_init(1000);
-
-    tinygl_draw_line(tinygl_point(1, 2), tinygl_point(3, 5), 1);
-
-    while (1)
-    {
-        pacer_wait();
-        tinygl_update();
-    }
+    obstacle.top = obstacle.type == 'U' ? U_OBSTACLE_TOP : L_OBSTACLE_TOP;
+    obstacle.bottom = obstacle.type == 'U' ? U_OBSTACLE_BOT : L_OBSTACLE_BOT;
 }

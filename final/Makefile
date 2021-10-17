@@ -19,13 +19,30 @@ all: game.out
 game.o: game.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+obstacle.o: obstacle.c ../../utils/tinygl.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+tinygl.o: ../../utils/tinygl.c ../../utils/tinygl.h ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+display.o: ../../drivers/display.c ../../drivers/display.h ../../drivers/avr/system.h ../../drivers/ledmat.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+font.o: ../../utils/font.c ../../utils/font.h ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+ledmat.o: ../../drivers/ledmat.c ../../drivers/ledmat.h ../../drivers/avr/pio.h ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o
+game.out: game.o obstacle.o system.o tinygl.o display.o font.o ledmat.o pio.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

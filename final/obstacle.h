@@ -35,6 +35,9 @@ obstacle_t lower_obstacle_init(void);
 /* Advance an obstacle's position */
 void advance_obstacle(obstacle_t obstacle);
 
+/* Reset an obstacle's position to the initial points */
+void reset_obstacle(obstacle_t obstacle);
+
 
 
 #endif // OBSTACLE_H
