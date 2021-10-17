@@ -40,12 +40,18 @@ ledmat.o: ../../drivers/ledmat.c ../../drivers/ledmat.h ../../drivers/avr/pio.h 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+navswitch.o: ../../drivers/navswitch.c ../../drivers/navswitch.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+pacer.o: pacer.c pacer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 # Link: create ELF output file from object files.
-game.out: game.o obstacle.o system.o tinygl.o display.o font.o ledmat.o pio.o
+game.out: game.o obstacle.o system.o tinygl.o display.o font.o ledmat.o pio.o navswitch.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
-
+	
 
 # Target: clean project.
 .PHONY: clean
