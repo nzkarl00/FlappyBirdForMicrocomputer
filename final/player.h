@@ -8,12 +8,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#define PLAYER_JUMPING_BOTTOM tinygl_point(1, 6)
+#define PLAYER_JUMPING_BOTTOM tinygl_point(2, 6)
 #define PLAYER_JUMPING_TOP tinygl_point(0, 6)
 #define PLAYER_NEUTRAL_BOTTOM tinygl_point(4, 6)
 #define PLAYER_NEUTRAL_TOP tinygl_point(2, 6)
 #define PLAYER_DUCKING_BOTTOM tinygl_point(4, 6)
-#define PLAYER_DUCKING_TOP tinygl_point(3, 6)
+#define PLAYER_DUCKING_TOP tinygl_point(2, 6)
 
 #include "tinygl.h"
 #include "navswitch.h"
