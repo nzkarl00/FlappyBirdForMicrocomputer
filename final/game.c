@@ -20,15 +20,17 @@ typedef enum {
 
 
 
-void reset_display_state(tinygl_pixel_value_t* array, uint8_t length)
+void reset_display_state(tinygl_pixel_value_t array[TINYGL_WIDTH][TINYGL_HEIGHT])
 {
-    for (uint8_t index = 0; index < length; index++) {
-        *(array + index) = 0;
+    for (tinygl_coord_t row = 0; row < TINYGL_HEIGHT; row++) {
+        for (tinygl_coord_t col = 0; col < TINYGL_WIDTH; col++) {
+            array[row][col] = 0;
+        }
     }
 }
 
 
-#define PACER_RATE 500
+#define PACER_RATE 5000
 #define MESSAGE_RATE 10
 
 
@@ -46,7 +48,7 @@ int main(void)
     uint8_t currentScore = 0;
     char scoreString[3];
 
-    tinygl_pixel_value_t displayState[TINYGL_WIDTH][TINYGL_HEIGHT] = {0};
+    tinygl_pixel_value_t displayState [TINYGL_WIDTH][TINYGL_HEIGHT] = {0};
     player_t playerCharacter = player_init();
     obstacle_t upperObstacle = upper_obstacle_init();
     obstacle_t lowerObstacle = lower_obstacle_init();
@@ -65,22 +67,30 @@ int main(void)
             
             case PLAYING_GAME:
                 if (tickCounter >= 5) {
-                    reset_display_state(displayState, (TINYGL_WIDTH * TINYGL_HEIGHT));
+                    reset_display_state(displayState);
                     navswitch_update ();
                     update_position(&playerCharacter);
-                    //update player position
-
+                    for (tinygl_coord_t col = playerCharacter.top.x; col < (playerCharacter.bottom.x); col++) {
+                        displayState[col][playerCharacter.top.y] = 1;
+                    }
                     advance_obstacle(&currentObstacle);
                     if (currentObstacle.top.y >= TINYGL_HEIGHT) {
                         reset_obstacle(&currentObstacle);
                         currentObstacle = obstacles[rand() & 1];
                     }
                     currentScore++;
-                for (tinygl_coord_t col = currentObstacle.top.x; col < (currentObstacle.bottom.x); col++) {
-                    displayState[col][currentObstacle.top.y] = 1;
-                }
-                if (currentObstacle.type == playerCharacter.state) { //TODO IMPLEMENT GAME END CONDITION
-                    currentState = GAME_OVER;
+                    for (tinygl_coord_t col = currentObstacle.top.x; col < (currentObstacle.bottom.x); col++) {
+                        displayState[col][currentObstacle.top.y] = 1;
+                    }
+                    
+                    for (tinygl_coord_t row = 0; row < TINYGL_HEIGHT; row++) {
+                        for (tinygl_coord_t col = 0; col < TINYGL_WIDTH; col++) {
+                            display_pixel_set(row, col, displayState[row][col]);
+                        }
+                    }
+                    if (currentObstacle.type == playerCharacter.state) {
+                        currentState = GAME_OVER;
+                    }
                 }
                 tickCounter++;
                 tinygl_update(); 
@@ -98,10 +108,5 @@ int main(void)
                 // display welcome message; navswitch push to start game?
                 break;
         }
-
     }
-
-
-
-}
 }
