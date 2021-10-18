@@ -20,7 +20,7 @@ typedef enum {
 
 
 
-void reset_display_state(tinygl_pixel_value_t array[TINYGL_WIDTH][TINYGL_HEIGHT])
+void reset_display_state(tinygl_pixel_value_t array[TINYGL_HEIGHT][TINYGL_WIDTH])
 {
     for (tinygl_coord_t row = 0; row < TINYGL_HEIGHT; row++) {
         for (tinygl_coord_t col = 0; col < TINYGL_WIDTH; col++) {
@@ -48,7 +48,7 @@ int main(void)
     uint8_t currentScore = 0;
     char scoreString[3];
 
-    tinygl_pixel_value_t displayState [TINYGL_WIDTH][TINYGL_HEIGHT] = {0};
+    tinygl_pixel_value_t displayState [TINYGL_HEIGHT][TINYGL_WIDTH] = {0};
     player_t playerCharacter = player_init();
     obstacle_t upperObstacle = upper_obstacle_init();
     obstacle_t lowerObstacle = lower_obstacle_init();
@@ -85,7 +85,7 @@ int main(void)
                     
                     for (tinygl_coord_t row = 0; row < TINYGL_HEIGHT; row++) {
                         for (tinygl_coord_t col = 0; col < TINYGL_WIDTH; col++) {
-                            display_pixel_set(row, col, displayState[row][col]);
+                            display_pixel_set(col, row, displayState[col][row]);
                         }
                     }
                     if (currentObstacle.type == playerCharacter.state) {
