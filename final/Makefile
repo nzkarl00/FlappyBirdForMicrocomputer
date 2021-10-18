@@ -1,7 +1,8 @@
-# File:   Makefile
-# Author: M. P. Hayes, UCECE
-# Date:   12 Sep 2010
-# Descr:  Makefile for game
+# 	@file   player.h
+#   @author F. van Dorsser
+#   @author K. Moore
+#   @date   12 October 2021
+#   @brief  Implements player character movements
 
 # Definitions.
 CC = avr-gcc
