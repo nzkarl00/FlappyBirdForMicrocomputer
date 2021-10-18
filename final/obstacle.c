@@ -24,15 +24,15 @@ obstacle_t lower_obstacle_init(void)
 
 /* Advance an obstacle's position, resetting to the top of the screen 
    if outside bounds */
-void advance_obstacle(obstacle_t obstacle)
+void advance_obstacle(obstacle_t* obstacle)
 {
-    obstacle.top.y += 1;
-    obstacle.bottom.y += 1;
+    obstacle->top.y += 1;
+    obstacle->bottom.y += 1;
 }
 
 /* Reset an obstacle's position to the initial points */
-void reset_obstacle(obstacle_t obstacle)
+void reset_obstacle(obstacle_t* obstacle)
 {
-    obstacle.top = obstacle.type == 'U' ? U_OBSTACLE_TOP : L_OBSTACLE_TOP;
-    obstacle.bottom = obstacle.type == 'U' ? U_OBSTACLE_BOT : L_OBSTACLE_BOT;
+    obstacle->top = obstacle->type == 'U' ? U_OBSTACLE_TOP : L_OBSTACLE_TOP;
+    obstacle->bottom = obstacle->type == 'U' ? U_OBSTACLE_BOT : L_OBSTACLE_BOT;
 }
