@@ -12,7 +12,7 @@
 
 /* Define initial obstacle display coords */
 #define U_OBSTACLE_TOP tinygl_point(0, 0)
-#define U_OBSTACLE_BOT tinygl_point(1, 0)
+#define U_OBSTACLE_BOT tinygl_point(2, 0)
 
 #define L_OBSTACLE_TOP tinygl_point(2, 0)
 #define L_OBSTACLE_BOT tinygl_point(4, 0)
