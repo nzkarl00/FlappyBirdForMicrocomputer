@@ -49,6 +49,8 @@ tinygl.o: ../../utils/tinygl.c ../../utils/tinygl.h ../../drivers/avr/system.h .
 font.o: ../../utils/font.c ../../utils/font.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 	
@@ -56,7 +58,7 @@ font.o: ../../utils/font.c ../../utils/font.h ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o pio.o navswitch.o pacer.o display.o ledmat.o player.o obstacle.o tinygl.o font.o
+game.out: game.o system.o pio.o navswitch.o pacer.o display.o ledmat.o player.o obstacle.o tinygl.o font.o uint8toa.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
