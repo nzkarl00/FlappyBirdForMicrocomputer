@@ -38,6 +38,10 @@ void advance_obstacle(obstacle_t* obstacle);
 /* Reset an obstacle's position to the initial points */
 void reset_obstacle(obstacle_t* obstacle);
 
+/* Randomly select a new obstacle from the obstacles array */
+obstacle_t* get_new_obstacle(obstacle_t obstacles[]);
 
+/* Update obstacle position and return a new one from the pool if it reaches the end of the display */
+obstacle_t* update_obstacle(obstacle_t* obstacle, obstacle_t obstacles []);
 
 #endif // OBSTACLE_H

@@ -1,5 +1,5 @@
-#ifndef PACER_H
-#define PACER_H
+#ifndef PACER1_H
+#define PACER1_H
 
 #include "system.h"
 
@@ -12,4 +12,4 @@ void pacer_init (uint16_t pacer_frequency);
 /* Pace a while loop.  */
 void pacer_wait (void);
 
-#endif //PACER_H
+#endif //PACER1_H

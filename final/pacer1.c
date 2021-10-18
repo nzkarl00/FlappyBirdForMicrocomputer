@@ -1,5 +1,5 @@
 #include <avr/io.h>
-#include "pacer.h"
+#include "pacer1.h"
 
 static uint16_t counter_threshold;
 

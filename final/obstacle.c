@@ -6,7 +6,7 @@
 */
 
 #include "obstacle.h"
-
+#include "tinygl.h"
 
 /* Create a new upper obstacle */
 obstacle_t upper_obstacle_init(void)
@@ -35,4 +35,24 @@ void reset_obstacle(obstacle_t* obstacle)
 {
     obstacle->top = obstacle->type == 'U' ? U_OBSTACLE_TOP : L_OBSTACLE_TOP;
     obstacle->bottom = obstacle->type == 'U' ? U_OBSTACLE_BOT : L_OBSTACLE_BOT;
+}
+
+/* Randomly select a new obstacle from the obstacles array */
+obstacle_t* get_new_obstacle(obstacle_t obstacles[])
+{
+    obstacle_t newObstacle = obstacles[rand() & 1];
+    return &newObstacle;
+}
+
+/* Update obstacle position and return a new one from the pool if it reaches the end of the display */
+obstacle_t* update_obstacle(obstacle_t* obstacle, obstacle_t obstacles [])
+{
+    obstacle_t* updated = obstacle;
+
+    advance_obstacle(obstacle);
+    if (obstacle->top.y >= TINYGL_HEIGHT) {
+        reset_obstacle(obstacle);
+        updated = get_new_obstacle(obstacles);
+    }
+    return updated;    
 }
