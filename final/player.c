@@ -34,9 +34,7 @@ void player_duck(player_t* player) {
 }
 
 void update_position(player_t* player) {
-    /* if (navswitch_push_event_p (NAVSWITCH_EAST)) {
-        player_duck(player);
-    } else  */if (navswitch_push_event_p (NAVSWITCH_WEST)) {
+    if (navswitch_push_event_p (NAVSWITCH_WEST)) {
         player_jump(player);
     }
 }
