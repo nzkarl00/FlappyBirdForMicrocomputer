@@ -51,11 +51,19 @@ obstacle_t update_obstacle(obstacle_t* obstacle, obstacle_t obstacles [])
     obstacle_t updated;
 
     advance_obstacle(obstacle);
-    if (obstacle->top.y >= TINYGL_HEIGHT) {
+    if (obstacle_at_end(obstacle)) {
         reset_obstacle(obstacle);
         updated = get_new_obstacle(obstacles);
     } else {
         updated = *obstacle;
     }
     return updated;    
+}
+
+bool obstacle_at_end(obstacle_t* obstacle) {
+    if (obstacle->top.y >= TINYGL_HEIGHT) {
+        return true;
+    } else {
+        return false;
+    }
 }

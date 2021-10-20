@@ -74,8 +74,7 @@ int main(void)
     uint8_t obstacleAdvances = 0;
     uint16_t gameOverTick = 0;
 
-    bool gameOver = playerCharacter.bottom.y == currentObstacle.bottom.y && \
-                    playerCharacter.state == currentObstacle.type;
+    bool gameOver = false;
 
     while(1) {
         pacer_wait ();
@@ -116,6 +115,10 @@ int main(void)
                 
                 tinygl_draw_line(currentObstacle.top, currentObstacle.bottom, 1);
 
+                if ((currentObstacle.top.y == MAX_OBSTACLE_ADVANCES-1) && (playerCharacter.state == currentObstacle.type)) {
+                    gameOver = true;
+                }
+
                 if (obstacleTick >= PACER_RATE / obstacleRate) {
                     obstacleTick = 0;
                     currentObstacle = update_obstacle(&currentObstacle, obstacles);
@@ -131,13 +134,11 @@ int main(void)
                 playerRefreshTick++;
                 obstacleTick++;
                 display_update();
-                
                 break;
 
             case GAME_OVER:
                 
                 tinygl_clear();
-
                 if (currentScore > highScore) {
                     highScore = currentScore;
                 }
@@ -145,6 +146,7 @@ int main(void)
                     uint8toa(highScore, scoreString, true);
                     strcat(finalMessage, scoreString);
                     tinygl_text(finalMessage);
+                    
                 }
 
                 tinygl_update();
