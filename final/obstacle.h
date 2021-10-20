@@ -8,6 +8,7 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
+#include <stdbool.h>
 #include "tinygl.h"
 
 /* Define initial obstacle display coords */
@@ -43,5 +44,8 @@ obstacle_t get_new_obstacle(obstacle_t obstacles[]);
 
 /* Update obstacle position and return a new one from the pool if it reaches the end of the display */
 void update_obstacle(obstacle_t* obstacle, obstacle_t obstacles []);
+
+/* Check to see if an obsacle is at the end of the display */
+bool obstacle_at_end(obstacle_t* obstacle);
 
 #endif // OBSTACLE_H

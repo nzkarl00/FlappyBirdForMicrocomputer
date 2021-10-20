@@ -52,5 +52,14 @@ void update_obstacle(obstacle_t* currentObstacle, obstacle_t obstacles [])
     if (currentObstacle->top.y >= TINYGL_HEIGHT) {
         reset_obstacle(currentObstacle);
         *currentObstacle = get_new_obstacle(obstacles);
-    }   
+    }    
+}
+
+/* Check to see if an obsacle is at the end of the display */
+bool obstacle_at_end(obstacle_t* obstacle) {
+    if (obstacle->top.y >= TINYGL_HEIGHT) {
+        return true;
+    } else {
+        return false;
+    }
 }

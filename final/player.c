@@ -11,7 +11,7 @@
 
 player_t player_init()
 {
-    player_t player = {PLAYER_NEUTRAL_TOP, PLAYER_NEUTRAL_BOTTOM, 'N'};
+    player_t player = {PLAYER_NEUTRAL_TOP, PLAYER_NEUTRAL_BOTTOM, 'L'};
     return player;
 }
 

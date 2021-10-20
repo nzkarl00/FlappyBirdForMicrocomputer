@@ -34,8 +34,8 @@
 #define SCORE_STR_LEN 3
 #define FINAL_MESSAGE_LEN 32
 #define GAME_OVER_PERIOD 10000
-#define COLLISION_DETECTED (playerCharacter.bottom.y == currentObstacle.bottom.y && \
-                            playerCharacter.state == currentObstacle.type)
+#define COLLISION_DETECTED (currentObstacle.top.y == TINYGL_HEIGHT - 1) && \
+                            (playerCharacter.state == currentObstacle.type)
 
 
 typedef enum {
@@ -130,7 +130,6 @@ int main(void)
                 playerRefreshTick++;
                 obstacleTick++;
                 display_update();
-                
                 break;
 
             case GAME_OVER:
@@ -146,6 +145,7 @@ int main(void)
                     strcat(finalMessage, scoreString);
                     tinygl_clear();
                     tinygl_text(finalMessage);
+                    
                 }
 
                 tinygl_update();
