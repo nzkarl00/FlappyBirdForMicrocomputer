@@ -31,8 +31,11 @@
 #define MAX_OBSTACLE_RATE 10
 #define MAX_OBSTACLE_ADVANCES TINYGL_HEIGHT
 #define PLAYER_POINTS_PER_SPEED_INCREASE 5
-#define GAME_OVER_PERIOD 5000
-
+#define SCORE_STR_LEN 3
+#define FINAL_MESSAGE_LEN 32
+#define GAME_OVER_PERIOD 10000
+#define COLLISION_DETECTED (playerCharacter.bottom.y == currentObstacle.bottom.y && \
+                            playerCharacter.state == currentObstacle.type)
 
 
 typedef enum {
@@ -55,9 +58,8 @@ int main(void)
     game_state_t currentState = START_GAME;
     static uint8_t highScore = 0;
     uint8_t currentScore = 0;
-    char scoreString[3];
     char welcomeMessage[] = "Welcome! Push navswitch to start";
-    char finalMessage[35] = "Game over! Your high score is: ";
+    char gameOverMessage[] = "Game over! Your high score is: ";
     tinygl_text(welcomeMessage);
 
     player_t playerCharacter = player_init();
@@ -74,9 +76,6 @@ int main(void)
     uint8_t obstacleAdvances = 0;
     uint16_t gameOverTick = 0;
 
-    bool gameOver = playerCharacter.bottom.y == currentObstacle.bottom.y && \
-                    playerCharacter.state == currentObstacle.type;
-
     while(1) {
         pacer_wait ();
         
@@ -84,16 +83,9 @@ int main(void)
             
             case PLAYING_GAME:
 
-                if (!gameOver) {
-                    currentScore += obstacleAdvances / MAX_OBSTACLE_ADVANCES;
-                    obstacleAdvances = obstacleAdvances == MAX_OBSTACLE_ADVANCES ? 0 : obstacleAdvances;
-                } else {
-                    currentState = GAME_OVER;
-                }
-
                 if (playingTick >= PACER_RATE / GAME_UPDATE_RATE) { //Only updates the player position every 5 ticks to prevent ghosting
                     playingTick = 0;
-                    tinygl_clear();
+                    display_clear();
                     navswitch_update();
                     update_position(&playerCharacter);
 
@@ -116,10 +108,17 @@ int main(void)
                 
                 tinygl_draw_line(currentObstacle.top, currentObstacle.bottom, 1);
 
+                if (COLLISION_DETECTED) {
+                    currentState = GAME_OVER;
+                    display_clear();
+                } else if (obstacleAdvances == MAX_OBSTACLE_ADVANCES) {
+                    currentScore++;
+                    obstacleAdvances = 0;
+                }
+
                 if (obstacleTick >= PACER_RATE / obstacleRate) {
                     obstacleTick = 0;
-                    currentObstacle = update_obstacle(&currentObstacle, obstacles);
-                    //advance_obstacle(&currentObstacle);
+                    update_obstacle(&currentObstacle, obstacles);
                     obstacleAdvances++;
                 }
 
@@ -135,23 +134,28 @@ int main(void)
                 break;
 
             case GAME_OVER:
-                
-                tinygl_clear();
 
                 if (currentScore > highScore) {
                     highScore = currentScore;
                 }
                 if (gameOverTick == 0) {
+                    char scoreString[SCORE_STR_LEN];
+                    char finalMessage[FINAL_MESSAGE_LEN];
                     uint8toa(highScore, scoreString, true);
+                    strcpy(finalMessage, gameOverMessage);
                     strcat(finalMessage, scoreString);
+                    tinygl_clear();
                     tinygl_text(finalMessage);
                 }
 
                 tinygl_update();
+                
+                gameOverTick++;
 
                 if(gameOverTick >= GAME_OVER_PERIOD) {
                     currentState = START_GAME;
                     currentScore = 0;
+                    playerCharacter = player_init();
                     reset_obstacle(&currentObstacle);
                     currentObstacle = get_new_obstacle(obstacles);
                     playingTick = 0;
@@ -160,11 +164,10 @@ int main(void)
                     obstacleRate = INIT_OBSTACLE_RATE;
                     obstacleAdvances = 0;
                     gameOverTick = 0;
+                    tinygl_clear();
                     tinygl_text(welcomeMessage);
                 }
 
-                gameOverTick++;
-                
                 break;
                 
             case START_GAME:

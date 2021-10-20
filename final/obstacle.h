@@ -42,6 +42,6 @@ void reset_obstacle(obstacle_t* obstacle);
 obstacle_t get_new_obstacle(obstacle_t obstacles[]);
 
 /* Update obstacle position and return a new one from the pool if it reaches the end of the display */
-obstacle_t update_obstacle(obstacle_t* obstacle, obstacle_t obstacles []);
+void update_obstacle(obstacle_t* obstacle, obstacle_t obstacles []);
 
 #endif // OBSTACLE_H

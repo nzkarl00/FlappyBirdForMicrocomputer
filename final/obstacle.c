@@ -45,17 +45,12 @@ obstacle_t get_new_obstacle(obstacle_t obstacles[])
     return newObstacle;
 }
 
-/* Update obstacle position and return a new one from the pool if it reaches the end of the display */
-obstacle_t update_obstacle(obstacle_t* obstacle, obstacle_t obstacles [])
+/* Update the current obstacle's position, selecting a new one if it reaches the end of the display */
+void update_obstacle(obstacle_t* currentObstacle, obstacle_t obstacles [])
 {
-    obstacle_t updated;
-
-    advance_obstacle(obstacle);
-    if (obstacle->top.y >= TINYGL_HEIGHT) {
-        reset_obstacle(obstacle);
-        updated = get_new_obstacle(obstacles);
-    } else {
-        updated = *obstacle;
-    }
-    return updated;    
+    advance_obstacle(currentObstacle);
+    if (currentObstacle->top.y >= TINYGL_HEIGHT) {
+        reset_obstacle(currentObstacle);
+        *currentObstacle = get_new_obstacle(obstacles);
+    }   
 }
