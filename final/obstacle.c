@@ -5,6 +5,7 @@
     @brief  Implements game obstacles
 */
 
+#include <stdlib.h>
 #include "obstacle.h"
 #include "tinygl.h"
 
@@ -38,21 +39,23 @@ void reset_obstacle(obstacle_t* obstacle)
 }
 
 /* Randomly select a new obstacle from the obstacles array */
-obstacle_t* get_new_obstacle(obstacle_t obstacles[])
+obstacle_t get_new_obstacle(obstacle_t obstacles[])
 {
     obstacle_t newObstacle = obstacles[rand() & 1];
-    return &newObstacle;
+    return newObstacle;
 }
 
 /* Update obstacle position and return a new one from the pool if it reaches the end of the display */
-obstacle_t* update_obstacle(obstacle_t* obstacle, obstacle_t obstacles [])
+obstacle_t update_obstacle(obstacle_t* obstacle, obstacle_t obstacles [])
 {
-    obstacle_t* updated = obstacle;
+    obstacle_t updated;
 
     advance_obstacle(obstacle);
     if (obstacle->top.y >= TINYGL_HEIGHT) {
         reset_obstacle(obstacle);
         updated = get_new_obstacle(obstacles);
+    } else {
+        updated = *obstacle;
     }
     return updated;    
 }

@@ -1,24 +1,38 @@
 /** @file   player.h
     @author F. van Dorsser
     @author K. Moore
-    @date   12 October 2021
+    @date   18 October 2021
     @brief  Main loop for the game and game logic
 */
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include "display.h"
 #include "ledmat.h"
 #include "system.h"
 #include "pio.h"
 #include "navswitch.h"
-#include "pacer.h"
+#include "pacer1.h"
 #include "tinygl.h"
 #include "obstacle.h"
-#include "uint8toa.h"
 #include "player.h"
+#include "uint8toa.h"
 #include "../fonts/font5x7_1.h"
+
+
+#define PACER_RATE 500
+#define MESSAGE_RATE 20
+#define GAME_UPDATE_RATE 100
+#define PLAYER_BLINK_RATE 5
+#define PLAYER_GRAVITY_TRIGGER 67
+#define INIT_OBSTACLE_RATE 3
+#define MAX_OBSTACLE_RATE 10
+#define MAX_OBSTACLE_ADVANCES TINYGL_HEIGHT
+#define PLAYER_POINTS_PER_SPEED_INCREASE 5
+#define GAME_OVER_PERIOD 5000
+
 
 
 typedef enum {
@@ -26,80 +40,142 @@ typedef enum {
 } game_state_t;
 
 
-
-void reset_display_state(tinygl_pixel_value_t array[TINYGL_HEIGHT][TINYGL_WIDTH])
-{
-    for (tinygl_coord_t row = 0; row < TINYGL_HEIGHT; row++) {
-        for (tinygl_coord_t col = 0; col < TINYGL_WIDTH; col++) {
-            array[row][col] = 0;
-        }
-    }
-}
-
-
-
-
-// Mock-up of display update logic
-
 int main(void)
 {
     // call initialisation funcs
-    system_init ();
-    navswitch_init ();
-    pacer_init (250);
-    display_init ();
-    game_state_t currentState = PLAYING_GAME; //TODO START GAME CONDITION
+    system_init();
+    navswitch_init();
+    pacer_init(PACER_RATE);
+    display_init();
+    tinygl_init(PACER_RATE);
+    tinygl_font_set(&font5x7_1);
+    tinygl_text_speed_set(MESSAGE_RATE);
+    tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
+
+    game_state_t currentState = START_GAME;
     static uint8_t highScore = 0;
     uint8_t currentScore = 0;
     char scoreString[3];
+    char welcomeMessage[] = "Welcome! Push navswitch to start";
+    char finalMessage[35] = "Game over! Your high score is: ";
+    tinygl_text(welcomeMessage);
 
-    tinygl_pixel_value_t displayState [TINYGL_HEIGHT][TINYGL_WIDTH] = {0};
     player_t playerCharacter = player_init();
     obstacle_t upperObstacle = upper_obstacle_init();
     obstacle_t lowerObstacle = lower_obstacle_init();
     obstacle_t obstacles[] = {upperObstacle, lowerObstacle};
-    obstacle_t currentObstacle = obstacles[0];
-    int8_t tickCounter = 0;
-    int8_t playerRefresh = 0;
-    int8_t obstacleMove = 0;
+    obstacle_t currentObstacle = get_new_obstacle(obstacles);
+    uint8_t obstacleRate = INIT_OBSTACLE_RATE;
+
+    uint8_t playingTick = 0;
+    uint8_t playerRefreshTick = 0;
+    uint8_t playerAirtime = 0;
+    uint8_t obstacleTick = 0;
+    uint8_t obstacleAdvances = 0;
+    uint16_t gameOverTick = 0;
+
+    bool gameOver = playerCharacter.bottom.y == currentObstacle.bottom.y && \
+                    playerCharacter.state == currentObstacle.type;
+
     while(1) {
         pacer_wait ();
         
         switch(currentState) {
             
             case PLAYING_GAME:
-                if (tickCounter >= 5) { //Only updates the player position every 5 ticks to prevent ghosting
-                    navswitch_update ();
-                    update_position(&playerCharacter);
-                    tinygl_clear();
-                    currentScore++;  
-                    tickCounter = 0;
-                    if (playerRefresh >= 10) {
-                        tinygl_draw_line(playerCharacter.top, playerCharacter.bottom, 1);
-                        playerRefresh = 0;
-                        obstacleMove++;
-                    }
-                    if (obstacleMove >= 10) {
-                            advance_obstacle(&currentObstacle);
-                            obstacleMove = 0;
-                    }
-                    playerRefresh++;
+
+                if (!gameOver) {
+                    currentScore += obstacleAdvances / MAX_OBSTACLE_ADVANCES;
+                    obstacleAdvances = obstacleAdvances == MAX_OBSTACLE_ADVANCES ? 0 : obstacleAdvances;
+                } else {
+                    currentState = GAME_OVER;
                 }
+
+                if (playingTick >= PACER_RATE / GAME_UPDATE_RATE) { //Only updates the player position every 5 ticks to prevent ghosting
+                    playingTick = 0;
+                    tinygl_clear();
+                    navswitch_update();
+                    update_position(&playerCharacter);
+
+                    if (playerCharacter.state == 'U') {
+                        playerAirtime++;
+                    } else {
+                        playerAirtime = 0;
+                    }
+
+                    if (playerAirtime >= PLAYER_GRAVITY_TRIGGER) {
+                        player_duck(&playerCharacter);
+                        playerAirtime = 0;
+                    }
+                }
+
+                if (playerRefreshTick >= PACER_RATE / PLAYER_BLINK_RATE) {
+                    playerRefreshTick = 0;
+                    tinygl_draw_line(playerCharacter.top, playerCharacter.bottom, 1);
+                }
+                
                 tinygl_draw_line(currentObstacle.top, currentObstacle.bottom, 1);
+
+                if (obstacleTick >= PACER_RATE / obstacleRate) {
+                    obstacleTick = 0;
+                    currentObstacle = update_obstacle(&currentObstacle, obstacles);
+                    //advance_obstacle(&currentObstacle);
+                    obstacleAdvances++;
+                }
+
+                if (obstacleRate < MAX_OBSTACLE_RATE) {
+                    obstacleRate = INIT_OBSTACLE_RATE + currentScore / PLAYER_POINTS_PER_SPEED_INCREASE;
+                }
+
+                playingTick++;
+                playerRefreshTick++;
+                obstacleTick++;
                 display_update();
-                tickCounter++;
+                
                 break;
+
             case GAME_OVER:
+                
+                tinygl_clear();
+
                 if (currentScore > highScore) {
                     highScore = currentScore;
                 }
-                uint8toa(highScore, scoreString, false);
-                tinygl_text(scoreString);
+                if (gameOverTick == 0) {
+                    uint8toa(highScore, scoreString, true);
+                    strcat(finalMessage, scoreString);
+                    tinygl_text(finalMessage);
+                }
+
                 tinygl_update();
+
+                if(gameOverTick >= GAME_OVER_PERIOD) {
+                    currentState = START_GAME;
+                    currentScore = 0;
+                    reset_obstacle(&currentObstacle);
+                    currentObstacle = get_new_obstacle(obstacles);
+                    playingTick = 0;
+                    playerRefreshTick = 0;
+                    obstacleTick = 0;
+                    obstacleRate = INIT_OBSTACLE_RATE;
+                    obstacleAdvances = 0;
+                    gameOverTick = 0;
+                    tinygl_text(welcomeMessage);
+                }
+
+                gameOverTick++;
+                
                 break;
                 
             case START_GAME:
-                // display welcome message; navswitch push to start game?
+                
+                tinygl_update();
+
+                navswitch_update();
+                if (navswitch_push_event_p(NAVSWITCH_PUSH)) {
+                    currentState = PLAYING_GAME;
+                }
+
                 break;
         }
     }

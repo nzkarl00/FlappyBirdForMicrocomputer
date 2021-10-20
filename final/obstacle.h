@@ -12,7 +12,7 @@
 
 /* Define initial obstacle display coords */
 #define U_OBSTACLE_TOP tinygl_point(0, 0)
-#define U_OBSTACLE_BOT tinygl_point(2, 0)
+#define U_OBSTACLE_BOT tinygl_point(1, 0)
 
 #define L_OBSTACLE_TOP tinygl_point(3, 0)
 #define L_OBSTACLE_BOT tinygl_point(4, 0)
@@ -39,9 +39,9 @@ void advance_obstacle(obstacle_t* obstacle);
 void reset_obstacle(obstacle_t* obstacle);
 
 /* Randomly select a new obstacle from the obstacles array */
-obstacle_t* get_new_obstacle(obstacle_t obstacles[]);
+obstacle_t get_new_obstacle(obstacle_t obstacles[]);
 
 /* Update obstacle position and return a new one from the pool if it reaches the end of the display */
-obstacle_t* update_obstacle(obstacle_t* obstacle, obstacle_t obstacles []);
+obstacle_t update_obstacle(obstacle_t* obstacle, obstacle_t obstacles []);
 
 #endif // OBSTACLE_H

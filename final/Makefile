@@ -29,7 +29,7 @@ pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h
 navswitch.o: ../../drivers/navswitch.c ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-pacer.o: pacer.c pacer.h
+pacer1.o: pacer1.c pacer1.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 ledmat.o: ../../drivers/ledmat.c ../../drivers/ledmat.h
@@ -59,7 +59,7 @@ uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o pio.o navswitch.o pacer.o display.o ledmat.o player.o obstacle.o tinygl.o font.o uint8toa.o
+game.out: game.o system.o pio.o navswitch.o pacer1.o display.o ledmat.o player.o obstacle.o tinygl.o font.o uint8toa.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
