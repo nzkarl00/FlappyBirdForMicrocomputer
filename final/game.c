@@ -31,8 +31,8 @@
 #define MAX_OBSTACLE_RATE 10
 #define MAX_OBSTACLE_ADVANCES TINYGL_HEIGHT
 #define PLAYER_POINTS_PER_SPEED_INCREASE 5
-#define SCORE_STR_LEN 3
-#define FINAL_MESSAGE_LEN 32
+#define SCORE_STR_LEN 4
+#define FINAL_MESSAGE_LEN 36
 #define GAME_OVER_PERIOD 10000
 #define COLLISION_DETECTED (currentObstacle.top.y == TINYGL_HEIGHT - 1) && \
                             (playerCharacter.state == currentObstacle.type)
@@ -58,8 +58,10 @@ int main(void)
     game_state_t currentState = START_GAME;
     static uint8_t highScore = 0;
     uint8_t currentScore = 0;
-    char welcomeMessage[] = "Welcome! Push navswitch to start";
-    char gameOverMessage[] = "Game over! Your high score is: ";
+    const char welcomeMessage[] = "Welcome! Push navswitch to start";
+    const char gameOverMessage[] = "Game over! Your high score is: ";
+    char scoreString[SCORE_STR_LEN];
+    char finalMessage[FINAL_MESSAGE_LEN];
     tinygl_text(welcomeMessage);
 
     player_t playerCharacter = player_init();
@@ -138,14 +140,13 @@ int main(void)
                     highScore = currentScore;
                 }
                 if (gameOverTick == 0) {
-                    char scoreString[SCORE_STR_LEN];
-                    char finalMessage[FINAL_MESSAGE_LEN];
-                    uint8toa(highScore, scoreString, true);
+                    scoreString[0] = 0;
+                    finalMessage[0] = 0;
+                    uint8toa(highScore, scoreString, false);
                     strcpy(finalMessage, gameOverMessage);
                     strcat(finalMessage, scoreString);
                     tinygl_clear();
                     tinygl_text(finalMessage);
-                    
                 }
 
                 tinygl_update();
