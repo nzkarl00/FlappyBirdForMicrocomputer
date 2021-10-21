@@ -1,7 +1,7 @@
 How to play:
 
 Loading and starting the game:
-    - Run make program in this directory to load the game onto the UCFK4.
+    - Run make program in the group-401 directory to load the game onto the UCFK4.
     - Follow the instructions scrolling across the display; pushing the navswitch in will start the game.
 
 Playing the game:
