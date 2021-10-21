@@ -17,21 +17,24 @@ player_t player_init()
 }
 
 /* Raises the player character so they can clear low obstacles */
-void player_jump(player_t* player) {
+void player_jump(player_t* player) 
+{
     player->top = PLAYER_JUMPING_TOP;
     player->bottom = PLAYER_JUMPING_BOTTOM;
     player->state = 'U';
 }
 
 /* Returns the player character to the ground, allowing them to avoid high obstacles */
-void player_fall(player_t* player) {
+void player_fall(player_t* player) 
+{
     player->top = PLAYER_NEUTRAL_TOP;
     player->bottom = PLAYER_NEUTRAL_BOTTOM;
     player->state = 'L';
 }
 
 /* Checks if the user is inputting a jump command on the navswitch */
-void update_position(player_t* player) {
+void update_position(player_t* player) 
+{
     if (navswitch_push_event_p (NAVSWITCH_WEST)) {
         player_jump(player);
     }

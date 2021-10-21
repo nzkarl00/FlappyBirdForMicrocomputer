@@ -16,6 +16,8 @@
 #include "tinygl.h"
 #include "navswitch.h"
 
+/* Defines a player, which has a top and bottom point for a line to be drawn, 
+as well as a state which is used to compare to objects as a game ending condition */
 typedef struct {
     tinygl_point_t top;
     tinygl_point_t bottom;

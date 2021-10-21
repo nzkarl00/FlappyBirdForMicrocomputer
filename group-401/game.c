@@ -138,7 +138,7 @@ int main(void)
                 if (currentScore > highScore) {
                     highScore = currentScore;
                 }
-                if (gameOverTick == 0) {
+                if (gameOverTick == 0) { //Game end display
                     gameOverMessage[0] = 0;
                     sprintf(gameOverMessage, gameOverString, currentScore, highScore);
                     tinygl_clear();
