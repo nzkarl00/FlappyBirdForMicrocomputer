@@ -112,7 +112,7 @@ int main(void)
                 if (COLLISION_DETECTED) { //Game end condition met
                     currentState = GAME_OVER;
                     display_clear();
-                } else if (obstacleAdvances == MAX_OBSTACLE_ADVANCES) { //Game end condition not met
+                } else if (obstacleAdvances == MAX_OBSTACLE_ADVANCES) { //Current obstacle has been successfully evaded
                     currentScore++;
                     obstacleAdvances = 0;
                 }
