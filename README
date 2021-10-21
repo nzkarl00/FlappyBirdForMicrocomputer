@@ -1,16 +1,15 @@
-Use this directory for your final game and its module(s).  Only the
-files in this directory will be marked.
+How to play:
 
-Ensure you use the git add command to add your files to the git
-repository.  For example,
+Loading and starting the game:
+    - Run make program in this directory to load the game onto the UCFK4.
+    - Follow the instructions scrolling across the display; pushing the navswitch in will start the game.
 
-git add module.c
+Playing the game:
+    - The game runs in landscape mode. Your avatar will be flashing on the LH side of the display.
+    - Push the navswitch toward the LED matrix to jump. Your objective is to avoid hitting the obstacles moving towards you.
+    - Beware! The obstacles will speed up as you progress!
 
-Then use the git commit command to add the file contents
-
-git commit -m "Added file" module.c
-
-The use the git push command to copy the changes to the remote git server
-
-git push
-
+Ending and restarting:
+    - Striking an obstacle will end the game.
+    - You will see a message communicating your score for the previous round and your highest score.
+    - A restart message will then be displayed; pushing the navswitch in at this point will restart the game, as before.
