@@ -1,4 +1,4 @@
-/** @file   player.h
+/** @file   game.c
     @author F. van Dorsser
     @author K. Moore
     @date   18 October 2021
@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "display.h"
 #include "ledmat.h"
 #include "system.h"
@@ -18,7 +19,6 @@
 #include "tinygl.h"
 #include "obstacle.h"
 #include "player.h"
-#include "uint8toa.h"
 #include "../fonts/font5x7_1.h"
 
 
@@ -31,9 +31,8 @@
 #define MAX_OBSTACLE_RATE 10
 #define MAX_OBSTACLE_ADVANCES TINYGL_HEIGHT
 #define PLAYER_POINTS_PER_SPEED_INCREASE 5
-#define SCORE_STR_LEN 4
-#define FINAL_MESSAGE_LEN 37
-#define GAME_OVER_PERIOD 10300
+#define MAX_MESSAGE_LEN TINYGL_MESSAGE_SIZE
+#define GAME_OVER_PERIOD 8000
 #define COLLISION_DETECTED (currentObstacle.top.y == TINYGL_HEIGHT - 1) && \
                             (playerCharacter.state == currentObstacle.type)
 
@@ -45,7 +44,6 @@ typedef enum {
 
 int main(void)
 {
-    // call initialisation funcs
     system_init();
     navswitch_init();
     pacer_init(PACER_RATE);
@@ -56,12 +54,13 @@ int main(void)
     tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
 
     game_state_t currentState = START_GAME;
-    static uint8_t highScore = 0;
+    uint8_t highScore = 0;
     uint8_t currentScore = 0;
-    const char welcomeMessage[] = "Welcome! Push navswitch to start";
-    const char gameOverMessage[] = "Game over! Your high score is ";
-    char scoreString[SCORE_STR_LEN];
-    char finalMessage[FINAL_MESSAGE_LEN];
+    const char welcomeMessage[MAX_MESSAGE_LEN] = "Push navswitch to start playing";
+    const char gameOverString[MAX_MESSAGE_LEN] = "Score: %d. High score: %d.    ";
+    const char restartMessage[MAX_MESSAGE_LEN] = "Push navswitch to restart.";
+    char gameOverMessage[MAX_MESSAGE_LEN];
+    tinygl_clear();
     tinygl_text(welcomeMessage);
 
     player_t playerCharacter = player_init();
@@ -85,7 +84,7 @@ int main(void)
             
             case PLAYING_GAME:
 
-                if (playingTick >= PACER_RATE / GAME_UPDATE_RATE) { //Only updates the player position every 5 ticks to prevent ghosting
+                if (playingTick >= PACER_RATE / GAME_UPDATE_RATE) { //Update the player position every 5 ticks to match implicit display refresh rate
                     playingTick = 0;
                     display_clear();
                     navswitch_update();
@@ -140,13 +139,10 @@ int main(void)
                     highScore = currentScore;
                 }
                 if (gameOverTick == 0) {
-                    scoreString[0] = 0;
-                    finalMessage[0] = 0;
-                    uint8toa(highScore, scoreString, true);
-                    strcpy(finalMessage, gameOverMessage);
-                    strcat(finalMessage, scoreString);
+                    gameOverMessage[0] = 0;
+                    sprintf(gameOverMessage, gameOverString, currentScore, highScore);
                     tinygl_clear();
-                    tinygl_text(finalMessage);
+                    tinygl_text(gameOverMessage);
                 }
 
                 tinygl_update();
@@ -166,7 +162,7 @@ int main(void)
                     obstacleAdvances = 0;
                     gameOverTick = 0;
                     tinygl_clear();
-                    tinygl_text(welcomeMessage);
+                    tinygl_text(restartMessage);
                 }
 
                 break;

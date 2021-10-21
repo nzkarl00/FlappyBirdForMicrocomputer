@@ -1,8 +1,7 @@
-# 	@file   player.h
-#   @author F. van Dorsser
-#   @author K. Moore
-#   @date   12 October 2021
-#   @brief  Implements player character movements
+# File:   Makefile
+# Author: F. van Dorsser
+# Date:   12 October 2021
+# Descr:  Makefile for game
 
 # Definitions.
 CC = avr-gcc
@@ -50,16 +49,10 @@ tinygl.o: ../../utils/tinygl.c ../../utils/tinygl.h ../../drivers/avr/system.h .
 font.o: ../../utils/font.c ../../utils/font.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-uint8toa.o: ../../utils/uint8toa.c ../../drivers/avr/system.h
-	$(CC) -c $(CFLAGS) $< -o $@
-
-
-	
-
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o pio.o navswitch.o pacer1.o display.o ledmat.o player.o obstacle.o tinygl.o font.o uint8toa.o
+game.out: game.o system.o pio.o navswitch.o pacer1.o display.o ledmat.o player.o obstacle.o tinygl.o font.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
