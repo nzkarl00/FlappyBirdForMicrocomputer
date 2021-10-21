@@ -97,8 +97,8 @@ int main(void)
                         playerAirtime = 0;
                     }
 
-                    if (playerAirtime >= PLAYER_GRAVITY_TRIGGER) {
-                        player_duck(&playerCharacter);
+                    if (playerAirtime >= PLAYER_GRAVITY_TRIGGER) { //Causes the player character to fall if they have been in the air for too long
+                        player_fall(&playerCharacter);
                         playerAirtime = 0;
                     }
                 }
@@ -110,10 +110,10 @@ int main(void)
                 
                 tinygl_draw_line(currentObstacle.top, currentObstacle.bottom, 1);
 
-                if (COLLISION_DETECTED) {
+                if (COLLISION_DETECTED) { //Game end condition met
                     currentState = GAME_OVER;
                     display_clear();
-                } else if (obstacleAdvances == MAX_OBSTACLE_ADVANCES) {
+                } else if (obstacleAdvances == MAX_OBSTACLE_ADVANCES) { //Game end condition not met
                     currentScore++;
                     obstacleAdvances = 0;
                 }
@@ -139,7 +139,7 @@ int main(void)
                 if (currentScore > highScore) {
                     highScore = currentScore;
                 }
-                if (gameOverTick == 0) {
+                if (gameOverTick == 0) { //Post game score display
                     scoreString[0] = 0;
                     finalMessage[0] = 0;
                     uint8toa(highScore, scoreString, true);
@@ -153,7 +153,7 @@ int main(void)
                 
                 gameOverTick++;
 
-                if(gameOverTick >= GAME_OVER_PERIOD) {
+                if(gameOverTick >= GAME_OVER_PERIOD) { //Post game reset and instrucitonal message
                     currentState = START_GAME;
                     currentScore = 0;
                     playerCharacter = player_init();
